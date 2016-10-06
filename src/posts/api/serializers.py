@@ -1,7 +1,11 @@
 from rest_framework import serializers
-from rest_framework.serializers import HyperlinkedIdentityField
-
 from posts.models import Post
+
+from rest_framework.serializers import (
+    HyperlinkedIdentityField, 
+    SerializerMethodField,
+    )
+
 
 
 class PostCreateUpdateSerializer(serializers.ModelSerializer):
@@ -17,15 +21,35 @@ class PostCreateUpdateSerializer(serializers.ModelSerializer):
 
 
 class PostDetailSerializer(serializers.ModelSerializer):
+    user = SerializerMethodField()
+    image = SerializerMethodField()
+    markdown = SerializerMethodField()
     class Meta:
         model = Post
         fields = [
+        'user',
         'id',
         'title',
         'slug',
         'content',
+        'markdown',
         'publish',
+        'image',
         ]
+
+    def get_markdown(self, obj):
+        return obj.get_markdown()
+
+    def get_user(self, obj):
+        return str(obj.user.username)
+
+    def get_image(self, obj):
+        try:
+            image = obj.image.url
+        except:
+            image = None
+
+        return image
 
 
 class PostListSerializer(serializers.ModelSerializer):
@@ -38,6 +62,8 @@ class PostListSerializer(serializers.ModelSerializer):
         view_name = 'posts-api:delete',
         lookup_field='slug',
         )
+
+    user = SerializerMethodField()
     class Meta:
         model = Post
         fields = [
@@ -50,6 +76,9 @@ class PostListSerializer(serializers.ModelSerializer):
         'publish',
         'delete_url',
         ]
+
+    def get_user(self, obj):
+        return str(obj.user.username)
 
 
 
