@@ -32,9 +32,8 @@ urlpatterns = [
     url(r'^', include("posts.urls", namespace='posts')),
     #url(r'^posts/$', "<appname>.views.<function_name>"),
     # url(r'^api/posts/$', "<appname>.views.<function_name>"),
+    url(r'^api/comments/', include("comments.api.urls", namespace='comments-api')),
     url(r'^api/posts/', include("posts.api.urls", namespace='posts-api')),
-
-
 ]
 
 if settings.DEBUG:
